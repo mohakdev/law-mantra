@@ -1,5 +1,5 @@
 const { extractText } = require("../services/ocr");
-const { classifyScam, generateActions, chatForComplaintDetails } = require("../services/ai");
+const { classifyScam, generateActions, chatForComplaintDetails, legalChat } = require("../services/ai");
 const { getLegalInfo } = require("../services/legalMap");
 const { generateComplaintPDF } = require("../services/pdf");
 const { cleanText } = require("../utils/cleanText");
@@ -111,4 +111,19 @@ const handleChat = async (req, res) => {
   }
 };
 
-module.exports = { analyzeImage, generatePDF, handleChat };
+
+const handleLegalChat = async (req, res) => {
+  try {
+    const { conversationHistory } = req.body;
+    if (!conversationHistory || !Array.isArray(conversationHistory)) {
+      return res.status(400).json({ error: "conversationHistory array is required." });
+    }
+    const message = await legalChat(conversationHistory);
+    return res.json({ message });
+  } catch (err) {
+    console.error("handleLegalChat error:", err.message);
+    return res.status(500).json({ error: "Chat failed. Please try again." });
+  }
+};
+
+module.exports = { analyzeImage, generatePDF, handleChat, handleLegalChat };

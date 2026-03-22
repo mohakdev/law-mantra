@@ -34,3 +34,8 @@ export const downloadComplaintPDF = async (payload) => {
   link.remove();
   window.URL.revokeObjectURL(url);
 };
+
+export const sendLegalChatMessage = async (conversationHistory) => {
+  const { data } = await api.post("/legal-chat", { conversationHistory });
+  return data.message;
+};

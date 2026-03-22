@@ -179,4 +179,29 @@ Set non-null ONLY for fields found in the user current message.`;
   }
 };
 
-module.exports = { classifyScam, generateActions, chatForComplaintDetails };
+
+/**
+ * Legal Q&A chatbot restricted to Indian Constitution & law
+ */
+const legalChat = async (conversationHistory) => {
+  const systemPrompt = `You are a knowledgeable Indian legal assistant specializing in the Indian Constitution, Indian Penal Code (IPC), and Indian laws.
+
+STRICT SCOPE RULES:
+- ONLY answer questions about Indian law, Constitution, IPC, CrPC, IT Act, consumer rights, fundamental rights, or Indian legal procedures.
+- If a question is outside Indian law, politely say: "I can only assist with questions related to Indian law and the Constitution."
+- Never give personal legal advice or claim to replace a lawyer. End complex answers with a note to consult a qualified advocate.
+- Be accurate and concise. Cite relevant Articles, Sections, or Acts where applicable.
+- Use plain English. Format with numbered lists for multi-step answers.`;
+
+  const response = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [{ role: "system", content: systemPrompt }, ...conversationHistory],
+    temperature: 0.3,
+    max_tokens: 600,
+  });
+
+  return response.choices[0]?.message?.content?.trim() ||
+    "I could not process that. Please try again.";
+};
+
+module.exports = { classifyScam, generateActions, chatForComplaintDetails, legalChat };

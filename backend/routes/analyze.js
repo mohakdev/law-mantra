@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
-const { analyzeImage, generatePDF, handleChat } = require("../controllers/analyzeController");
+const { analyzeImage, generatePDF, handleChat, handleLegalChat } = require("../controllers/analyzeController");
 
 // Store uploads in memory (no disk writes needed)
 const storage = multer.memoryStorage();
@@ -19,5 +19,6 @@ const upload = multer({
 router.post("/analyze", upload.single("image"), analyzeImage);
 router.post("/generate-pdf", generatePDF);
 router.post("/chat", handleChat);
+router.post("/legal-chat", handleLegalChat);
 
 module.exports = router;

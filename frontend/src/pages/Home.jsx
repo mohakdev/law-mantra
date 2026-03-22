@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Upload from "../components/Upload";
 import Loader from "../components/Loader";
 import { analyzeImage } from "../services/api";
+import LegalChatBot from "../components/LegalChatBot";
 
 const FEATURES = [
   { icon: "◈", label: "OCR Text Extraction", desc: "Reads text directly from your screenshot" },
@@ -180,6 +181,7 @@ export default function Home() {
           Helpline: <span className="text-slate-400">1930</span>
         </p>
       </footer>
+      <LegalChatBot />
     </div>
   );
 }

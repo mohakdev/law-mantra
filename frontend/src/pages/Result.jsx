@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ResultCard from "../components/ResultCard";
 import ActionList from "../components/ActionList";
+import LegalChatBot from "../components/LegalChatBot";
 import ChatComplaint from "../components/ChatComplaint";
 import ComplaintPreview from "../components/ComplaintPreview";
 
@@ -228,6 +229,7 @@ export default function Result() {
           Legal information is for guidance only. Consult a legal professional for case-specific advice.
         </p>
       </footer>
+      <LegalChatBot />
     </div>
   );
 }
