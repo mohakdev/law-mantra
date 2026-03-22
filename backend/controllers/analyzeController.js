@@ -1,5 +1,5 @@
 const { extractText } = require("../services/ocr");
-const { classifyScam, generateActions } = require("../services/ai");
+const { classifyScam, generateActions, chatForComplaintDetails } = require("../services/ai");
 const { getLegalInfo } = require("../services/legalMap");
 const { generateComplaintPDF } = require("../services/pdf");
 const { cleanText } = require("../utils/cleanText");
@@ -58,13 +58,19 @@ const analyzeImage = async (req, res) => {
 
 const generatePDF = async (req, res) => {
   try {
-    const { scamType, description, name, law, actions } = req.body;
+    const {
+      scamType, description, fullName, phone, email,
+      aadhaarLast4, aadhaarFull, pan, address, dateOfIncident, imageBase64,
+    } = req.body;
 
-    if (!scamType || !name) {
-      return res.status(400).json({ error: "Missing required fields: scamType and name." });
+    if (!scamType || !fullName) {
+      return res.status(400).json({ error: "Missing required fields: scamType and fullName." });
     }
 
-    const pdfBuffer = await generateComplaintPDF({ scamType, description, name, law, actions });
+    const pdfBuffer = await generateComplaintPDF({
+      scamType, description, fullName, phone, email,
+      aadhaarLast4, aadhaarFull, pan, address, dateOfIncident, imageBase64,
+    });
 
     res.set({
       "Content-Type": "application/pdf",
@@ -79,4 +85,30 @@ const generatePDF = async (req, res) => {
   }
 };
 
-module.exports = { analyzeImage, generatePDF };
+const handleChat = async (req, res) => {
+  try {
+    const { conversationHistory, scamContext, collectedFields } = req.body;
+
+    if (!conversationHistory || !Array.isArray(conversationHistory)) {
+      return res.status(400).json({ error: "conversationHistory array is required." });
+    }
+
+    const result = await chatForComplaintDetails(
+      conversationHistory,
+      scamContext || "Unknown scam",
+      collectedFields || {}
+    );
+
+    return res.json(result);
+  } catch (err) {
+    console.error("handleChat error:", err.message);
+    return res.status(500).json({
+      error: "Chat failed. Please try again.",
+      message: "Sorry, I had trouble processing that. Could you please repeat?",
+      extractedFields: {},
+      allCollected: false,
+    });
+  }
+};
+
+module.exports = { analyzeImage, generatePDF, handleChat };
