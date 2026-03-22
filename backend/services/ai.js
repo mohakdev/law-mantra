@@ -21,6 +21,10 @@ Analyze the given message text and classify it into one of these exact categorie
 - upi_fraud
 - unknown
 
+Only classify as a scam if there are CLEAR indicators like:
+urgency + money request, fake links, impersonation, prize claims, or asking for credentials.
+Set confidence below 60 if you are not certain.
+
 Return ONLY a valid JSON object with these exact fields:
 {
   "type": "<one of the categories above>",
