@@ -87,7 +87,7 @@ export default function Home() {
             <span className="text-white text-xs font-display font-bold">⚖</span>
           </div>
           <span className="font-display font-semibold text-white text-sm tracking-tight">
-            Legal First-Aid
+            Legal Mantra
           </span>
         </div>
         <a
